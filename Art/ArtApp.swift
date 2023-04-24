@@ -9,9 +9,15 @@ import SwiftUI
 
 @main
 struct ArtApp: App {
+    @StateObject var departmentVM = DepartmentViewModel()
+    @StateObject var artworkListVM = ArtworkViewModel()
+
     var body: some Scene {
+        
         WindowGroup {
-            ContentView()
+            ArtHomePage()
+                .environmentObject(departmentVM)
+                .environmentObject(artworkListVM)
         }
     }
 }
