@@ -14,6 +14,7 @@ class ArtworkViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var artworkOfTheDay = Artwork()
     @Published var artOfDayLoading = false
+    @Published var favorites: [Artwork] = []
     
     var lastDeptId = 0
     
@@ -21,30 +22,32 @@ class ArtworkViewModel: ObservableObject {
         var objectIDs: [Int] = []
     }
     
-    func getDataOfArtwork(artID: Int) async {
+    func getDataOfArtwork(artID: Int) async -> Artwork {
         isLoading = true
         let urlString = "https://collectionapi.metmuseum.org/public/collection/v1/objects/\(artID)"
         print("We are accessing the url \(urlString)")
         guard let url = URL(string: urlString) else {
             print("ERROR: Could not convert \(urlString) to a URL")
             isLoading = false
-            return
+            return Artwork()
         }
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
             do {
                 let returned = try JSONDecoder().decode(Artwork.self, from: data)
-                self.artwork = returned
                 print("JSON returned: \n\(self.artwork)")
 //                isLoading = false
+                return returned
                 
             } catch {
                 print("ERROR: Could not decode data")
 //                isLoading = false
+                return Artwork()
             }
         } catch {
 //            isLoading = false
             print("ERROR: Could not get data from \(urlString). \(error.localizedDescription)")
+            return Artwork()
         }
     }
     
@@ -123,10 +126,12 @@ class ArtworkViewModel: ObservableObject {
             await getDatabyDepartment(departmentID: lastDeptId)
             return
         }
+        var art = Artwork()
         repeat {
             let id = artworksId.randomElement()!
-            await getDataOfArtwork(artID: id)
-        } while self.artwork.primaryImage == ""
+            art = await getDataOfArtwork(artID: id)
+        } while art.primaryImage == ""
+        self.artwork = art
         isLoading = false
     }
     
@@ -189,9 +194,21 @@ class ArtworkViewModel: ObservableObject {
         }
     }
     
-    func guessYear(year: String) -> Bool {
-        let newYear = Int(year)
-        return true
+    func guessYear(year: String) -> String {
+        let newYear = Int(year)!
+        let buffer = 50
+        if newYear <= artwork.objectEndDate! && newYear >= artwork.objectBeginDate! {
+            return "yes"
+        } else if newYear <= (artwork.objectEndDate! + buffer) && newYear >= (artwork.objectBeginDate! - buffer) {
+            return "close"
+        } else {return "no"}
+    }
+    
+    func guessDepartment(dept: Department) -> Bool {
+        print(dept)
+        print(artwork.department ?? "")
+        if dept.displayName == artwork.department {return true}
+        else {return false}
     }
     
 }

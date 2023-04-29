@@ -21,7 +21,7 @@ struct DepartmentListView: View {
                         NavigationLink(department.displayName) {
 //                            ArtworkListView(department: department)
                             if quiz {
-                                QuizDetailView(department: department)
+                                QuizDetailView(department: department, isDeptQuiz: true)
                             } else {
                                 ArtworkDetailView(department: department)
                             }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Artwork: Codable, Identifiable {
+struct Artwork: Codable, Identifiable, Equatable {
     let id = UUID().uuidString
     var objectId: Int?
     var department: String?
@@ -20,8 +20,10 @@ struct Artwork: Codable, Identifiable {
     var artistWikidata_URL: String?
     var objectBeginDate: Int?
     var objectEndDate: Int?
+    var linkResource: String?
+    var objectURL: String?
     
     enum CodingKeys: CodingKey {
-        case objectId, department, title, primaryImage, accessionYear, artistDisplayName, objectDate, period, artistWikidata_URL, objectBeginDate, objectEndDate
+        case objectId, department, title, primaryImage, accessionYear, artistDisplayName, objectDate, period, artistWikidata_URL, objectBeginDate, objectEndDate, linkResource, objectURL
     }
 }
