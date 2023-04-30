@@ -86,6 +86,9 @@ struct QuizDetailView: View {
                         }
                         .multilineTextAlignment(.center)
                         .disabled(guessed)
+                        .onChange(of: guessYear) { _ in
+                            guessYear = guessYear.trimmingCharacters(in: .decimalDigits.inverted)
+                        }
                 }
                     Picker("Year Range", selection: $yearRange) {
                         ForEach(Century.allCases, id: \.self) { range in

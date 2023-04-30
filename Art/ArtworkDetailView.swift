@@ -67,6 +67,7 @@ struct ArtworkDetailView: View {
                         Spacer()
                     }
                 }
+
                 
                 if artworkVM.artwork.objectURL != "" {
                     VStack {

@@ -195,7 +195,7 @@ class ArtworkViewModel: ObservableObject {
     }
     
     func guessYear(year: String) -> String {
-        let newYear = Int(year)!
+        let newYear = Int(year) ?? -10000000000
         let buffer = 50
         if newYear <= artwork.objectEndDate! && newYear >= artwork.objectBeginDate! {
             return "yes"
